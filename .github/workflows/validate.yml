@@ -3,7 +3,7 @@ name: Node CI environment
 on: push
 
 jobs:
-  lint:
+  super-lint:
     runs-on: ubuntu-latest
 
     strategy:
