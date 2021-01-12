@@ -1,0 +1,30 @@
+name: React CI Environment
+
+on: push
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install
+        run: npm i --ignore-scripts
+
+      - name: Run ESLint
+        run: node_modules/.bin/eslint src/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
