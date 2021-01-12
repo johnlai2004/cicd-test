@@ -1,21 +1,33 @@
-name: Super-Linter
+name: React CI Environment
 
-# Run this workflow every time a new commit pushed to your repository
 on: push
 
 jobs:
-  super-lint:
-    name: Lint code base
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
 
-    steps:
-      # Checks out a copy of your repository on the ubuntu-latest machine
-      - name: Checkout code
-        uses: actions/checkout@v2
+    strategy:
+      matrix:
+        node-version: [12.x]
 
-      # Runs the Super-Linter action
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env:
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install
+        working-directory: ./application
+        run: npm i --ignore-scripts
+
+      - name: Run ESLint
+        with:
+          eslint-config-path: "./application/.eslintrc.yml"
+          custom-directory: "./application"
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+        run: node_modules/.bin/eslint src/
