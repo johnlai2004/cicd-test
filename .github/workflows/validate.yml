@@ -12,7 +12,7 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
@@ -26,8 +26,8 @@ jobs:
         run: npm i --ignore-scripts
 
       - name: Run ESLint
+        run: node_modules/.bin/eslint src/
         with:
           eslint-config-path: "./application/.eslintrc.yml"
           custom-directory: "./application"
           repo-token: ${{secrets.GITHUB_TOKEN}}
-        run: node_modules/.bin/eslint src/
